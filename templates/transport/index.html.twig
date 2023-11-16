@@ -1,0 +1,60 @@
+{# templates/transports/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Transports{% endblock %}
+
+{% block body %}
+    <h1>Liste des Transports</h1>
+
+    {# Formulaire de recherche par type #}
+    <form action="{{ path('transports_index') }}" method="get">
+        <label for="searchType">Rechercher par type :</label>
+        <input type="text" id="searchType" name="searchType" value="{{ app.request.query.get('searchType') }}">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Capacité</th>
+                <th>Date de Départ</th>
+                <th>Date d'Arrivée</th>
+                <th>Prix</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transport in transports %}
+                {# Afficher tous les transports si aucun type n'est spécifié dans la requête, ou si le type correspond à la recherche #}
+                {% if not app.request.query.has('searchType') or transport.type == app.request.query.get('searchType') %}
+                    <tr>
+                        <td>{{ transport.type }}</td>
+                        <td>{{ transport.cap }}</td>
+                        <td>{{ transport.dd|date('Y-m-d') }}</td>
+                        <td>{{ transport.da|date('Y-m-d') }}</td>
+                        <td>{{ transport.prix }}</td>
+                        <td>
+                            {# Formulaire pour afficher le détail du transport #}
+                            <form action="{{ path('transports_show', {'id': transport.id}) }}" method="get" style="display: inline;">
+                                <button type="submit">Voir</button>
+                            </form>
+
+                            {# Formulaire pour modifier le transport #}
+                            <form action="{{ path('transports_edit', {'id': transport.id}) }}" method="get" style="display: inline;">
+                                <button type="submit">Modifier</button>
+                            </form>
+
+                            {# Formulaire pour supprimer le transport #}
+                            <form action="{{ path('transports_delete', {'id': transport.id}) }}" method="post" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce transport ?');">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

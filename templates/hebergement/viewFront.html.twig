@@ -1,0 +1,21 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block title %}Sélection de Hebergement{% endblock %}
+                        
+{% block body %}
+
+        {% for heb in hebergements %}
+        <div class="item">
+            <div class="client-text">                                
+                <p>Type: {{ heb.type }}</p>
+                <p>Adresse: {{ heb.adresse }}</p>
+                    <h4><strong>Capacite: {{ heb.capacite }}, </strong><i>Prix: {{ heb.prix }} DT</i></h4>
+            </div>
+        </div>
+        {% endfor %}
+        
+                
+            
+
+    
+{% endblock %}

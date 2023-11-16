@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hebergement{% endblock %}
+
+{% block body %}
+    <h4><b>Liste des Hebergements</b></h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Capacite</th>
+                <th>Prix</th>
+                <th>Adresse</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Categorie</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for hebergement in hebergements %}
+            <tr>
+                <td>{{ hebergement.capacite }}</td>
+                <td>{{ hebergement.prix }}</td>
+                <td>{{ hebergement.adresse }}</td>
+                <td>{{ hebergement.type }}</td>
+                <td>{{ hebergement.description }}</td>
+                <td>{{ hebergement.categories }}</td>
+                <td>
+                    <button class="btn"><a style="color:#000;" href="{{ path('app_hebergement_show', {'id': hebergement.id}) }}">Afficher</a></button>
+                    <button class="btn"><a style="color:#000;" href="{{ path('app_hebergement_edit', {'id': hebergement.id}) }}">Modifier</a></button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Pas des Hebergements.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <button class="btn"><a style="color:#000;" href="{{ path('app_hebergement_new') }}">Ajouter une Hebergement</a></button>
+{% endblock %}
