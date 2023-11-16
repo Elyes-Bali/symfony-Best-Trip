@@ -1,0 +1,43 @@
+
+
+{% include 'dashboard/navbar.html.twig' %}
+
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Create New Commentaire</h5>
+    </div>
+    <div class="card-body">
+        {{ form_start(form) }}
+
+        <div class="form-group">
+            <label for="contenu"></label>
+            {{ form_row(form.contenu, {'class': 'form-control'}) }}
+        </div>
+
+        <div class="form-group">
+            <label for="nom"></label>
+            {{ form_row(form.nom, {'class': 'form-control'}) }}
+        </div>
+
+        <div class="form-group">
+            <label for="datenow"></label>
+            {{ form_row(form.datenow, {'class': 'form-control'}) }}
+        </div>
+    </div>
+    <div class="card-footer">
+        <input type="submit" value="Create Commentaire" class="btn btn-primary">
+    </div>
+    {{ form_end(form) }}
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+
+
