@@ -1,0 +1,39 @@
+{% include 'dashboard/navbar.html.twig' %}
+{% block title %}Reponsereclamation{% endblock %}
+
+{% block body %}
+    <h1>Reponse réclamation</h1>
+
+    <table class="table">
+        <tbody>
+            
+            <tr>
+                <th>Prenom</th>
+                <td>{{ reponsereclamation.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Intitule</th>
+                <td>{{ reponsereclamation.intitule }}</td>
+            </tr>
+            <tr>
+                <th>Textreprec</th>
+                <td>{{ reponsereclamation.textreprec }}</td>
+            </tr>
+            <tr>
+                <th>Idrec</th>
+                <td>{{ reponsereclamation.idrec }}</td>
+            </tr>
+            <tr>
+                <th>Idreprec</th>
+                <td>{{ reponsereclamation.idreprec }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+    <a class="btn btn-outline-info" href="{{ path('app_reponsereclamation_index') }}">liste des réponses de réclamation</a>
+
+    <a class="btn btn-outline-warning " href="{{ path('app_reponsereclamation_edit', {'idreprec': reponsereclamation.idreprec}) }}">edit</a>
+
+    {{ include('reponsereclamation/_delete_form.html.twig') }}
+{% endblock %}
