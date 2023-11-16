@@ -1,0 +1,44 @@
+{# Appel du template du formulaire UserType avec une structure Bootstrap #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Create new User</h1>
+
+        <form method="POST">
+            {{ form_start(form) }}
+
+            <div class="mb-3">
+                {{ form_row(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.tel, {'attr': {'class': 'form-control', 'placeholder': 'Numéro de téléphone', 'pattern': '[0-9]+'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.age, {'attr': {'class': 'form-control', 'placeholder': 'Date de naissance'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.gender) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+            {{ form_end(form) }}
+        </form>
+    </div>
+{% endblock %}
