@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Entity;
-
+use App\Repository\ReclamationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Repository\ReclamationRepository;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 class Reclamation
 {
@@ -14,16 +13,23 @@ class Reclamation
     #[ORM\GeneratedValue]
     private ?int $idrec = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length:500)]
+    #[Assert\NotBlank(message:"Intitule ne peut pas être vide.")]
+    #[Assert\Length(max:500, maxMessage:"Intitule cannot be longer than {{ limit }} characters.")]
+
     private ?string $intitule = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length:500)]
+    #[Assert\NotBlank(message:"Text ne peut pas être vide.")]
+    #[Assert\Length(max:500, maxMessage:"Textrec cannot be longer than {{ limit }} characters.")]
     private ?string $textrec = null;
 
     #[ORM\Column]
-    private ?int $idu = null;
+    private ?int $idu = 1;
 
-    #[ORM\Column]
+    #[ORM\Column(length:500)]
+    #[Assert\NotBlank(message:"E-mail ne peut pas être vide.")]
+    #[Assert\Email(message:"Invalid email format.")]
     private ?string $emailu = null;
 
     public function getIdrec(): ?int
@@ -36,13 +42,8 @@ class Reclamation
         return $this->intitule;
     }
 
-    public function setIntitule(?string $intitule): static
+    public function setIntitule(string $intitule): static
     {
-        // Vérifier si l'intitulé n'est pas vide
-        if (empty($intitule)) {
-            throw new \InvalidArgumentException("L'intitulé ne peut pas être vide.");
-        }
-
         $this->intitule = $intitule;
 
         return $this;
@@ -53,13 +54,8 @@ class Reclamation
         return $this->textrec;
     }
 
-    public function setTextrec(?string $textrec): static
+    public function setTextrec(string $textrec): static
     {
-        // Vérifier si le texte de la réclamation n'est pas vide
-        if (empty($textrec)) {
-            throw new \InvalidArgumentException("Le texte de la réclamation ne peut pas être vide.");
-        }
-
         $this->textrec = $textrec;
 
         return $this;
@@ -70,13 +66,8 @@ class Reclamation
         return $this->idu;
     }
 
-    public function setIdu(?int $idu): static
+    public function setIdu(int $idu): static
     {
-        // Vérifier si l'ID utilisateur n'est pas vide
-        if ($idu === null) {
-            throw new \InvalidArgumentException("L'ID utilisateur ne peut pas être vide.");
-        }
-
         $this->idu = $idu;
 
         return $this;
@@ -87,15 +78,17 @@ class Reclamation
         return $this->emailu;
     }
 
-    public function setEmailu(?string $emailu): static
+    public function setEmailu(string $emailu): static
     {
-        // Vérifier si l'email de l'utilisateur n'est pas vide
-        if (empty($emailu)) {
-            throw new \InvalidArgumentException("L'email de l'utilisateur ne peut pas être vide.");
-        }
-
         $this->emailu = $emailu;
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return (string) $this->idrec;
+    }
+
+    
 }

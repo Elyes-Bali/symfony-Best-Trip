@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reclamation Response{% endblock %}
+
+{% block body %}
+    <h1>Reclamation Response</h1>
+
+    <h2>Reclamation Details</h2>
+    <p><strong>Intitule:</strong> {{ reclamation.intitule }}</p>
+    <p><strong>Text:</strong> {{ reclamation.textrec }}</p>
+    <p><strong>User Email:</strong> {{ reclamation.emailu }}</p>
+
+    <h2>Response Details</h2>
+    {% if reponsereclamation is not null %}
+        <p><strong>Prenom:</strong> {{ reponsereclamation.prenom }}</p>
+        <p><strong>Response:</strong> {{ reponsereclamation.textreprec }}</p>
+    {% else %}
+        <p>No response available.</p>
+    {% endif %}
+{% endblock %}

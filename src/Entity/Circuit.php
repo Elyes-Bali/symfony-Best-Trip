@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Circuit
  *
- * @ORM\Table(name="circuit")
+ * @ORM\Table(name="circuit", indexes={@ORM\Index(name="iddest", columns={"destination_id"})})
  * @ORM\Entity
  */
 class Circuit
@@ -69,6 +69,16 @@ class Circuit
      * @ORM\Column(name="pays", type="string", length=255, nullable=false)
      */
     private $pays;
+
+    /**
+     * @var \Destination
+     *
+     * @ORM\ManyToOne(targetEntity="Destination")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="destination_id", referencedColumnName="iddest")
+     * })
+     */
+    private $destination;
 
 
 }

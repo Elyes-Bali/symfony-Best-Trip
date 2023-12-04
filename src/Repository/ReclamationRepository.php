@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Repository;
 
+namespace App\Repository;
 use App\Entity\Reclamation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
+
 
 /**
  * @extends ServiceEntityRepository<Reclamation>
@@ -21,6 +23,15 @@ class ReclamationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reclamation::class);
     }
 
+    public function findemailu($emailu)
+    {
+        return $this->createQueryBuilder('Reclamation')
+            ->where('Reclamation.emailu LIKE :emailu')
+            ->setParameter('emailu', '%' . $emailu . '%')
+            ->getQuery()
+            ->getResult();
+    }
+    
 //    /**
 //     * @return Reclamation[] Returns an array of Reclamation objects
 //     */
@@ -45,4 +56,41 @@ class ReclamationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+// public function searchReclamations(string $searchTerm): array
+// {
+//     // Implement your search logic here (e.g., using Doctrine QueryBuilder)
+
+//     return $this->createQueryBuilder('r')
+//         ->andWhere('r.intitule LIKE :searchTerm OR r.textrec LIKE :searchTerm OR r.emailu LIKE :searchTerm')
+//         ->setParameter('searchTerm', '%' . $searchTerm . '%')
+//         ->getQuery()
+//         ->getResult();
+// }
+// ReclamationRepository.php
+
+// public function search(array $criteria): array
+// {
+//     $queryBuilder = $this->createQueryBuilder('r');
+
+//     // Add conditions based on the criteria
+//     if (!empty($criteria['intitule'])) {
+//         $queryBuilder->andWhere('r.intitule LIKE :intitule')
+//             ->setParameter('intitule', '%' . $criteria['intitule'] . '%');
+//     }
+
+//     // Add more conditions for other fields if needed
+
+//     return $queryBuilder->getQuery()->getResult();
+// }
+
+public function search($query)
+{
+    return $this->createQueryBuilder('c')
+        ->andWhere('c.intitule LIKE :query OR c.emailu LIKE :query OR c.textrec LIKE :query')
+        ->setParameter('query', '%' . $query . '%')
+        ->getQuery()
+        ->getResult();
+}
+
 }

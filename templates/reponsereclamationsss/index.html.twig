@@ -1,0 +1,48 @@
+{% include 'dashboard/navbar.html.twig' %}
+
+{% block body %}
+    <h1>Réponse réclamation index</h1>
+
+    <table border='2' class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Prénom</th>
+                <th>Intitule</th>
+                <th>Text réponse du réclamation</th>
+                <th>Idrec</th>
+                <th>Idreprec</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reponsereclamation in reponsereclamations %}
+            <tr>
+                
+                <td>{{ reponsereclamation.prenom }}</td>
+                <td>{{ reponsereclamation.idrec.intitule }}</td>
+                <td>{{ reponsereclamation.textreprec }}</td>
+                <td>{{ reponsereclamation.idrec }}</td>
+                <td>{{ reponsereclamation.idreprec }}</td>
+                <td>
+                    <a href="{{ path('app_reponsereclamation_show', {'idreprec': reponsereclamation.idreprec}) }}" class="btn btn-outline-info">Show</a>
+                    <a href="{{ path('app_reponsereclamation_edit', {'idreprec': reponsereclamation.idreprec}) }}" class="btn btn-outline-primary">Edit</a>
+                    <a href="{{ path('app_reponsereclamation_new', {'idreprec': reponsereclamation.idreprec}) }}" class="btn btn-outline-success">Reponse</a>
+                                        {{ include('reponsereclamation/_delete_form.html.twig') }}
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<div class="row">
+    <div class="col-md-6">
+    <div class="col-md-6 text-md-end">
+     </div>
+    </div>
+    </div>
+{% endblock %}
+{% include 'dashboard/footer.html.twig' %}

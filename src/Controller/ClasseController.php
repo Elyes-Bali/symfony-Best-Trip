@@ -66,4 +66,9 @@ class ClasseController extends AbstractController
     {
         return $this->render('/User/register.html.twig');
     }
+    #[Route('/front', name:'fr')]
+    public function Front(): Response
+    {
+        return $this->render('/classe/front.html.twig');
+    }
 }

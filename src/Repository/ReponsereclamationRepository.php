@@ -45,4 +45,28 @@ class ReponsereclamationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+  // Custom method to fetch all Reclamation records with their associated responses
+  public function findAllWithResponses()
+  {
+      return $this->createQueryBuilder('rr')
+          ->leftJoin('rr.idrec', 'r') // Assuming 'idrec' is the association in Reponsereclamation
+          ->addSelect('r', 'rr', 'r.emailu', 'r.textrec') // Add other fields as needed
+          ->getQuery()
+          ->getResult();
+  }
+
+  // Custom method to fetch data with associated Reclamation and User
+  public function findDataWithReclamationAndUser()
+  {
+      $sql = 'SELECT user.idU, user.Prenom, reclamation.intitule, reponsereclamation.textRepRec, reclamation.idRec
+              FROM user
+              LEFT JOIN reclamation ON user.idU = reclamation.idU
+              LEFT JOIN reponsereclamation ON reclamation.idRec = reponsereclamation.idRec';
+
+      $em = $this->getEntityManager();
+      $query = $em->createNativeQuery($sql, new \Doctrine\ORM\Query\ResultSetMapping());
+
+      return $query->getResult();
+  }
 }

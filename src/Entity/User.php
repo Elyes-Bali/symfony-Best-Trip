@@ -70,5 +70,12 @@ class User
      */
     private $role;
 
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="Age", type="date", nullable=true)
+     */
+    private $age;
+
 
 }

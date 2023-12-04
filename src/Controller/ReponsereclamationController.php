@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Reclamation;
 use App\Entity\Reponsereclamation;
-use App\Form\Reponsereclamation1Type;
+use App\Form\ReponsereclamationType;
 use App\Repository\ReponsereclamationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,25 +22,32 @@ class ReponsereclamationController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_reponsereclamation_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $reponsereclamation = new Reponsereclamation();
-        $form = $this->createForm(Reponsereclamation1Type::class, $reponsereclamation);
-        $form->handleRequest($request);
+    #[Route('/new/{idrec}', name: 'app_reponsereclamation_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager, $idrec): Response
+{
+    $reponsereclamation = new Reponsereclamation();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($reponsereclamation);
-            $entityManager->flush();
+    // Assuming you have a method to find a reclamation by ID in your repository
+    $reclamation = $entityManager->getRepository(Reclamation::class)->find($idrec);
 
-            return $this->redirectToRoute('app_reponsereclamation_index', [], Response::HTTP_SEE_OTHER);
-        }
+    // Set the associated reclamation
+    $reponsereclamation->setIdrec($reclamation);
 
-        return $this->renderForm('reponsereclamation/new.html.twig', [
-            'reponsereclamation' => $reponsereclamation,
-            'form' => $form,
-        ]);
+    $form = $this->createForm(ReponsereclamationType::class, $reponsereclamation);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($reponsereclamation);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_reponsereclamation_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->renderForm('reponsereclamation/new.html.twig', [
+        'reponsereclamation' => $reponsereclamation,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/{idreprec}', name: 'app_reponsereclamation_show', methods: ['GET'])]
     public function show(Reponsereclamation $reponsereclamation): Response
@@ -53,7 +60,7 @@ class ReponsereclamationController extends AbstractController
     #[Route('/{idreprec}/edit', name: 'app_reponsereclamation_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reponsereclamation $reponsereclamation, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Reponsereclamation1Type::class, $reponsereclamation);
+        $form = $this->createForm(ReponsereclamationType::class, $reponsereclamation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -78,4 +85,6 @@ class ReponsereclamationController extends AbstractController
 
         return $this->redirectToRoute('app_reponsereclamation_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
 }
