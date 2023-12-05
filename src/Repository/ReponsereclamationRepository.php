@@ -59,9 +59,9 @@ class ReponsereclamationRepository extends ServiceEntityRepository
   // Custom method to fetch data with associated Reclamation and User
   public function findDataWithReclamationAndUser()
   {
-      $sql = 'SELECT user.idU, user.Prenom, reclamation.intitule, reponsereclamation.textRepRec, reclamation.idRec
+      $sql = 'SELECT user.id, user.Prenom, reclamation.intitule, reponsereclamation.textRepRec, reclamation.idRec
               FROM user
-              LEFT JOIN reclamation ON user.idU = reclamation.idU
+              LEFT JOIN reclamation ON user.id = reclamation.id
               LEFT JOIN reponsereclamation ON reclamation.idRec = reponsereclamation.idRec';
 
       $em = $this->getEntityManager();

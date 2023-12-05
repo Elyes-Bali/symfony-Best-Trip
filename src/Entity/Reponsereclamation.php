@@ -11,8 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
    class Reponsereclamation
    {
        #[ORM\Column]
-       #[Assert\NotNull(message:"Idu cannot be null.")]
-       private ?int $idu = null;
+       #[Assert\NotNull(message:"Id cannot be null.")]
+       private ?int $id = null;
    
        #[ORM\Column(length:500)]
        #[Assert\NotBlank(message:"Prenom cannot be blank.")]
@@ -38,14 +38,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\JoinColumn(name: "idRec", referencedColumnName: "idrec")]
 private ?Reclamation $idrec;
    
-       public function getIdu(): ?int
+       public function getId(): ?int
        {
-           return $this->idu;
+           return $this->id;
        }
    
-       public function setIdu(int $idu): static
+       public function setId(int $id): static
        {
-           $this->idu = $idu;
+           $this->id = $id;
    
            return $this;
        }

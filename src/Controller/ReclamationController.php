@@ -191,7 +191,7 @@ class ReclamationController extends AbstractController
 {
     $userCounts = [];
     foreach ($reclamations as $reclamation) {
-        $userId = $reclamation->getIdu();
+        $userId = $reclamation->getId();
         $userCounts[$userId] = ($userCounts[$userId] ?? 0) + 1;
     }
 

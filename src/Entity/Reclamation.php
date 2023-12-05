@@ -25,7 +25,7 @@ class Reclamation
     private ?string $textrec = null;
 
     #[ORM\Column]
-    private ?int $idu = 1;
+    private ?int $id = 1;
 
     #[ORM\Column(length:500)]
     #[Assert\NotBlank(message:"E-mail ne peut pas être vide.")]
@@ -61,14 +61,14 @@ class Reclamation
         return $this;
     }
 
-    public function getIdu(): ?int
+    public function getId(): ?int
     {
-        return $this->idu;
+        return $this->id;
     }
 
-    public function setIdu(int $idu): static
+    public function setId(int $id): static
     {
-        $this->idu = $idu;
+        $this->id = $id;
 
         return $this;
     }
