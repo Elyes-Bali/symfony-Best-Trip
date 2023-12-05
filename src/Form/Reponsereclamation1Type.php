@@ -17,6 +17,7 @@ class Reponsereclamation1Type extends AbstractType
             ->add('intitule')
             ->add('textreprec')
             ->add('idrec')
+           
         ;
     }
 

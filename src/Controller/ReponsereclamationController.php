@@ -10,6 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\SendReclamationEmailMessage;
+use Psr\Log\LoggerInterface;
 
 #[Route('/reponsereclamation')]
 class ReponsereclamationController extends AbstractController
@@ -22,6 +27,16 @@ class ReponsereclamationController extends AbstractController
         ]);
     }
 
+private $mailer;
+private $messageBus;
+
+// Add MessageBusInterface to the constructor
+public function __construct(MailerInterface $mailer, MessageBusInterface $messageBus)
+{
+    $this->mailer = $mailer;
+    $this->messageBus = $messageBus;
+}
+
     #[Route('/new/{idrec}', name: 'app_reponsereclamation_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager, $idrec): Response
 {
@@ -32,6 +47,8 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
 
     // Set the associated reclamation
     $reponsereclamation->setIdrec($reclamation);
+    /** @noinspection PhpParamsInspection */
+    $reponsereclamation->emailu = $reclamation->getEmailu();
 
     $form = $this->createForm(ReponsereclamationType::class, $reponsereclamation);
     $form->handleRequest($request);
@@ -39,15 +56,46 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
     if ($form->isSubmitted() && $form->isValid()) {
         $entityManager->persist($reponsereclamation);
         $entityManager->flush();
+        $this->sendReclamationEmail($reclamation->getEmailu(), $reclamation->getIntitule());
 
         return $this->redirectToRoute('app_reponsereclamation_index', [], Response::HTTP_SEE_OTHER);
     }
 
     return $this->renderForm('reponsereclamation/new.html.twig', [
+        'emailu' => $reclamation->getEmailu(),
         'reponsereclamation' => $reponsereclamation,
         'form' => $form,
     ]);
 }
+
+// private function sendReclamationEmail(string $email, string $reclamationIntitule): void
+// {
+//     try {
+//         $email = (new \Symfony\Component\Mime\Email())  
+//             ->from('abdennour.amdouni@esprit.tn')
+//             ->to($email)
+//             ->subject('Nouvelle réponse sur votre réclamation : ' . $reclamationIntitule)
+//             ->html('Votre réclamation a reçu une nouvelle réponse.');
+
+//         $this->mailer->send($email);
+//     } catch (\Exception $e) {
+//         // Log the error
+//         $this->logger->error('Error sending email: ' . $e->getMessage());
+//     }
+// }
+
+private function sendReclamationEmail(Reclamation $reclamation): void
+{
+    $email = (new \Symfony\Component\Mime\Email())  
+        ->from('abdennour.amdouni@esprit.tn')
+        ->to($reclamation->getEmailu())  // Use $reclamation->getEmailu() instead of $email
+        ->subject('Nouvelle réponse sur votre réclamation : ' . $reclamation->getIntitule())
+        ->html('Your reclamation has been received successfully.');
+
+    $this->mailer->send($email);
+}
+
+
 
     #[Route('/{idreprec}', name: 'app_reponsereclamation_show', methods: ['GET'])]
     public function show(Reponsereclamation $reponsereclamation): Response

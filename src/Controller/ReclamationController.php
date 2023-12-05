@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\SendReclamationEmailMessage;
+
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -34,12 +37,14 @@ class ReclamationController extends AbstractController
             'percentageData' => $percentageData,
                 ]);
     }
-
     private $mailer;
+    private $messageBus;
 
-    public function __construct(MailerInterface $mailer)
+    // Add MessageBusInterface to the constructor
+    public function __construct(MailerInterface $mailer, MessageBusInterface $messageBus)
     {
         $this->mailer = $mailer;
+        $this->messageBus = $messageBus;
     }
 
     #[Route('/new', name: 'app_reclamation_new', methods: ['GET', 'POST'])]
@@ -69,15 +74,29 @@ class ReclamationController extends AbstractController
     }
 
     private function sendReclamationEmail(Reclamation $reclamation): void
-    {
-        $email = (new Email())
-            ->from('abdennour.amdouni@esprit.tn')
-            ->to($reclamation->getEmailu())
-            ->subject('Reclamation Received')
-            ->html('Your reclamation has been received successfully.');
+{
+    $email = (new \Symfony\Component\Mime\Email())  
+        ->from('abdennour.amdouni@esprit.tn')
+        ->to($reclamation->getEmailu())
+        ->subject('Nouveau réponse sur votre réclamation reçue')
+        ->html('Votre réclamation est en cour de traitement');
 
-        $this->mailer->send($email);
-    }
+    $this->mailer->send($email);
+}
+
+    // private function sendReclamationEmail(Reclamation $reclamation): void
+    // {
+    //     // Create a message to be dispatched
+    //     $message = new SendReclamationEmailMessage(
+    //         'abdennour.amdouni@esprit.tn',
+    //         $reclamation->getEmailu(),
+    //         'Reclamation Received',
+    //         'Your reclamation has been received successfully.'
+    //     );
+    
+    //     // Dispatch the message to be handled asynchronously
+    //     $this->messageBus->dispatch($message);
+    // }
 
     private function replaceBadWords($text)
     {
@@ -139,16 +158,19 @@ class ReclamationController extends AbstractController
         return $this->render('/reclamation/_form.html.twig');
     }
 
-    #[Route('/searcher', name: 'searcher', methods: ['GET'])]
-public function searching(Request $request, ReclamationRepository $reclamationRepository): Response
-{
-    $query = $request->query->get('query');
-    $reclamations = $reclamationRepository->search($query);
+//     #[Route('/searcher', name: 'searcher', methods: ['GET'])]
+// public function searching(Request $request, ReclamationRepository $reclamationRepository): Response
+// {
+//     $query = $request->query->get('query');
+//     $reclamations = $reclamationRepository->search($query);
 
-    return $this->render('reclamation/index.html.twig', [
-        'reclamations' => $reclamations,
-    ]);
-}
+//     return $this->render('reclamation/index.html.twig', [
+//         'reclamations' => $reclamations,
+//     ]);
+// }
+
+
+
 
     /**
      * @Route("/search/back", name="emailuajax", methods={"GET"})
@@ -183,5 +205,49 @@ public function searching(Request $request, ReclamationRepository $reclamationRe
 
     return $percentageData;
 }
- 
+#[Route('/export-reclamation-excel', name: 'export_reclamation_excel')]
+
+public function exportToExcel(ReclamationRepository $reclamationRepository): Response
+{
+    // Récupérez la liste des utilisateurs depuis la base de données
+    $reclamations = $reclamationRepository->findAll();
+
+    // Créez une instance de la classe Spreadsheet
+    $spreadsheet = new Spreadsheet();
+
+    // Ajoutez les données à la feuille
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'ID Reclamation');
+    $sheet->setCellValue('B1', 'Intitule');
+    $sheet->setCellValue('C1', 'text');
+
+    // Remplissez les données des utilisateurs
+    $row = 2;
+    foreach ($reclamations as $reclamation) {
+        $sheet->setCellValue('A' . $row, $reclamation->getIdrec());
+        $sheet->setCellValue('B' . $row, $reclamation->getIntitule());
+        $sheet->setCellValue('C' . $row, $reclamation->getTextrec());
+        $row++;
+    }
+
+    // Générez le fichier Excel
+    $writer = new Xlsx($spreadsheet);
+
+    // Capturez la sortie dans une variable
+    ob_start();
+    $writer->save('php://output');
+    $excelContent = ob_get_clean();
+
+    // Créez une réponse pour le fichier Excel
+    $response = new Response();
+    $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    $response->headers->set('Content-Disposition', 'attachment;filename="export_reclamation.xlsx"');
+    $response->headers->set('Cache-Control', 'max-age=0');
+
+    // Affectez la sortie à la réponse
+    $response->setContent($excelContent);
+
+    // Envoyez la réponse
+    return $response;
+}
 }

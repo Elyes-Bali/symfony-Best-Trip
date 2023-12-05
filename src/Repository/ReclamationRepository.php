@@ -84,13 +84,4 @@ class ReclamationRepository extends ServiceEntityRepository
 //     return $queryBuilder->getQuery()->getResult();
 // }
 
-public function search($query)
-{
-    return $this->createQueryBuilder('c')
-        ->andWhere('c.intitule LIKE :query OR c.emailu LIKE :query OR c.textrec LIKE :query')
-        ->setParameter('query', '%' . $query . '%')
-        ->getQuery()
-        ->getResult();
-}
-
 }
